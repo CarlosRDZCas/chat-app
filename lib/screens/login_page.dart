@@ -1,9 +1,12 @@
+import 'package:chat_app/services/aut_service.dart';
 import 'package:chat_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/boton_azul.dart';
 import '../widgets/labels.dart';
 import '../widgets/logo.dart';
+import '../widgets/snackbar.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -43,6 +46,7 @@ class _FormState extends State<_Form> {
   TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthServices>(context);
     return Container(
       margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -61,9 +65,18 @@ class _FormState extends State<_Form> {
               textController: passwordController,
               textInputType: TextInputType.text),
           BotonAzul(
-            onPressed: () {
-              print(emailController.text);
-            },
+            onPressed: authService.autenticando
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+                    final login = await authService.login(
+                        emailController.text.trim(),
+                        passwordController.text.trim());
+                    login
+                        ? Navigator.pushReplacementNamed(context, 'usuarios')
+                        : ShowSnackBar(
+                            context, 'Login incorrecto', 5, Colors.red);
+                  },
             texto: 'Iniciar sesión',
           ),
         ],

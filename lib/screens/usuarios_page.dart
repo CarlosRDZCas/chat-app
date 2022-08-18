@@ -1,6 +1,10 @@
 import 'package:chat_app/models/usuario.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../services/aut_service.dart';
 
 class UsuariosScreen extends StatefulWidget {
   const UsuariosScreen({Key? key}) : super(key: key);
@@ -19,6 +23,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    final authservice = Provider.of<AuthServices>(context);
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -29,11 +34,14 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                 child: const Icon(Icons.offline_bolt, color: Colors.red))
           ],
           leading: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                AuthServices.deleteToken();
+                Navigator.pushReplacementNamed(context, 'login');
+              },
               icon: const Icon(Icons.exit_to_app, color: Colors.black87)),
-          title: const Center(
-              child:
-                  Text('Mi nombre', style: TextStyle(color: Colors.black87))),
+          title: Center(
+              child: Text(authservice.usuario!.nombre,
+                  style: TextStyle(color: Colors.black87))),
           elevation: 1,
           backgroundColor: Colors.white,
         ),
@@ -57,17 +65,17 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
 
   ListTile _usuarioListTile(Usuario usuario) {
     return ListTile(
-      title: Text(usuario.nombre!),
-      subtitle: Text(usuario.email!),
+      title: Text(usuario.nombre),
+      subtitle: Text(usuario.email),
       leading: CircleAvatar(
         backgroundColor: Colors.blue[100],
-        child: Text(usuario.nombre!.substring(0, 2)),
+        child: Text(usuario.nombre.substring(0, 2)),
       ),
       trailing: Container(
         width: 10,
         height: 10,
         decoration: BoxDecoration(
-            color: usuario.online! ? Colors.green : Colors.red,
+            color: usuario.online ? Colors.green : Colors.red,
             borderRadius: BorderRadius.circular(100)),
       ),
     );

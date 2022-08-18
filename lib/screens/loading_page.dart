@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../services/aut_service.dart';
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Loading page'),
+    return Scaffold(
+      body: FutureBuilder(
+        future: checkLoginState(context),
+        initialData: null,
+        builder: (context, snapshot) {
+          return const Center(
+            child: Text('Espere...'),
+          );
+        },
       ),
     );
+  }
+
+  Future checkLoginState(BuildContext context) async {
+    final authService = Provider.of<AuthServices>(context, listen: false);
+    final autenticado = await authService.isLoggedIn();
+    if (autenticado) {
+      Navigator.pushReplacementNamed(context, 'usuarios');
+    } else {
+      Navigator.pushReplacementNamed(context, 'login');
+    }
   }
 }

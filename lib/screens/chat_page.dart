@@ -109,20 +109,19 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   _handleSubmited(String texto) {
     if (texto.isEmpty) return;
 
-    print(texto);
     inputController.clear();
     _focusNode.requestFocus();
 
     setState(() {
       _estaEscribiendo = false;
-      final _message = ChatMessage(
+      final message = ChatMessage(
         text: texto,
         uid: '123',
         animationController: AnimationController(
             vsync: this, duration: const Duration(milliseconds: 800)),
       );
-      _messages.insert(0, _message);
-      _message.animationController.forward();
+      _messages.insert(0, message);
+      message.animationController.forward();
     });
   }
 
