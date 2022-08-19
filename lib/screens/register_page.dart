@@ -3,6 +3,7 @@ import 'package:chat_app/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../services/socket_service.dart';
 import '../widgets/boton_azul.dart';
 import '../widgets/labels.dart';
 import '../widgets/logo.dart';
@@ -48,6 +49,7 @@ class _FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthServices>(context);
+    final socketService = Provider.of<SocketService>(context);
     return Container(
       margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -79,10 +81,13 @@ class _FormState extends State<_Form> {
                         nombreController.text.trim(),
                         emailController.text.trim(),
                         passwordController.text.trim());
-                    register
-                        ? Navigator.pushReplacementNamed(context, 'usuarios')
-                        : ShowSnackBar(
-                            context, 'Error al registrarse', 5, Colors.red);
+                    if (register) {
+                      socketService.connect();
+                      Navigator.pushReplacementNamed(context, 'usuarios');
+                    } else {
+                      ShowSnackBar(
+                          context, 'Error al registrarse', 5, Colors.red);
+                    }
                   },
             texto: 'Registrarse',
           ),

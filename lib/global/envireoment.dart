@@ -6,6 +6,6 @@ class Enviroment {
       : 'http://localhost:3000/api';
 
   static String SOCKET_URL = Platform.isAndroid
-      ? 'http://192.168.1.161/3000'
+      ? 'http://192.168.1.161:3000'
       : 'http://localhost:3000';
 }
